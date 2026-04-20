@@ -8,6 +8,10 @@ builder.Services.AddSingleton<IZGChainClient>(_ => new NethereumZGChainClient(
     builder.Configuration["Chain:Rpc"] ?? "",
     builder.Configuration["Chain:ContractAddress"] ?? "",
     builder.Configuration["Chain:MasterPrivateKey"]));
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton<IZGStorageClient>(sp =>
+    new ZGStorageHttpClient(builder.Configuration["Storage:Endpoint"] ?? "http://localhost:5999",
+                            sp.GetRequiredService<IHttpClientFactory>().CreateClient()));
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment()) { app.UseSwagger(); app.UseSwaggerUI(); }
